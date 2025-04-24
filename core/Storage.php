@@ -49,4 +49,20 @@ class Storage {
         $filtered = array_filter( $hidden, fn( $s ) => $s !== $source );
         update_option( $this->option_name, $filtered );
     }
+
+    /**
+     * Guarda los callbacks activos al momento de ocultar
+     */
+    public function save_callbacks_snapshot( string $source, array $callbacks ): void {
+        update_option( "anc_callbacks_snapshot_{$source}", $callbacks );
+    }
+    
+
+    /**
+     * Devuelve el snapshot de callbacks desactivados para un origen
+     */
+    public function get_callbacks_snapshot( string $source ): array {
+        return get_option( "anc_callbacks_snapshot_{$source}", [] );
+    }
+
 }

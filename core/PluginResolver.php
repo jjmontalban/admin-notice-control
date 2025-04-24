@@ -24,11 +24,22 @@ class PluginResolver {
 
             $file = $reflector->getFileName();
 
-            if ( ! $file || strpos( $file, WP_PLUGIN_DIR ) !== 0 ) {
+            if ( ! $file ) {
                 return null;
             }
+            
+            // Normaliza las rutas para compatibilidad en Windows
+            $file_normalized = wp_normalize_path( $file );
+            $plugin_dir_normalized = wp_normalize_path( WP_PLUGIN_DIR );
+            
+            if ( strpos( $file_normalized, $plugin_dir_normalized ) !== 0 ) {
+                return null;
+            }
+            
+            $relative = str_replace( $plugin_dir_normalized . '/', '', $file_normalized );
+            
 
-            $relative = str_replace( WP_PLUGIN_DIR . '/', '', $file );
+
             $parts = explode( '/', $relative );
             $plugin_dir = $parts[0];
 

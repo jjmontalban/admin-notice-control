@@ -1,5 +1,3 @@
-// admin-notice-control.php
-
 <?php
 /**
  * Plugin Name: Admin Notice Control
@@ -37,17 +35,13 @@ add_action( 'plugins_loaded', function () {
         ( new AdminMenu() )->register();
         ( new NoticeManager() )->disable_hidden_callbacks();
     }
-} );
+});
 
-
-// Añadir enlace a "Ajustes" en la lista de plugins (preparado para traducción)
-function anc_plugin_settings_link($links) {
+add_filter('plugin_action_links_' . plugin_basename(__FILE__), function($links) {
     $settings_link = '<a href="options-general.php?page=admin-notice-control">' . esc_html__('Settings', 'admin-notice-control') . '</a>';
     array_unshift($links, $settings_link);
     return $links;
-}
-add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'anc_plugin_settings_link');
-
+});
 
 add_action( 'admin_post_anc_save_all_sources', 'anc_handle_save_all_sources' );
 
@@ -56,7 +50,11 @@ function anc_handle_save_all_sources() {
         wp_die( esc_html__( 'Unauthorized action.', 'admin-notice-control' ) );
     }
 
-    $storage = new Storage();
+    $scanner        = new HookScanner();
+    $pluginResolver = new PluginResolver();
+    $themeResolver  = new ThemeResolver();
+    $storage        = new Storage();
+    $raw_callbacks  = $scanner->get_registered_notice_callbacks();
 
     if ( isset( $_POST['source_settings'] ) && is_array( $_POST['source_settings'] ) ) {
         foreach ( $_POST['source_settings'] as $source => $action ) {
@@ -64,9 +62,23 @@ function anc_handle_save_all_sources() {
             $action = sanitize_text_field( wp_unslash( $action ) );
 
             if ( $action === 'hide' ) {
+                $snapshot = [];
+
+                foreach ( $raw_callbacks as $cb ) {
+                    $resolved = $pluginResolver->resolve( $cb['callback'] )
+                               ?? $themeResolver->resolve( $cb['callback'] )
+                               ?? __( 'unknown', 'admin-notice-control' );
+
+                    if ( trim( $resolved ) === trim( $source ) ) {
+                        $snapshot[] = $cb['callback'];
+                    }
+                }
+
+                $storage->save_callbacks_snapshot( $source, $snapshot );
                 $storage->hide( $source );
             } elseif ( $action === 'show' ) {
                 $storage->unhide( $source );
+                delete_option( "anc_callbacks_snapshot_{$source}" );
             }
         }
     }
@@ -74,3 +86,6 @@ function anc_handle_save_all_sources() {
     wp_safe_redirect( admin_url( 'options-general.php?page=admin-notice-control&updated=1' ) );
     exit;
 }
+
+
+add_action( 'admin_post_anc_toggle_notice', [ NoticesPage::class, 'handle_form' ] );

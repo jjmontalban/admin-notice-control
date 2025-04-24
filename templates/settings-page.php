@@ -1,26 +1,21 @@
-<?php
-defined( 'ABSPATH' ) || exit;
-?>
+<?php defined( 'ABSPATH' ) || exit; ?>
 
 <div class="wrap">
-    <?php if ( ! empty( $sources ) ) : ?>
-        <table class="widefat fixed striped" id="anc-notice-table">
-        <div class="wrap">
     <h1><?php esc_html_e( 'Admin Notice Control', 'admin-notice-control' ); ?></h1>
     <p><?php esc_html_e( 'Manage which plugins or themes can display admin notices.', 'admin-notice-control' ); ?></p>
 
     <?php if ( ! empty( $sources ) ) : ?>
-        <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+        <form method="post" action="<?php echo esc_url( admin_url('admin-post.php') ); ?>">
+            <input type="hidden" name="action" value="anc_save_all_sources">
             <?php wp_nonce_field( 'anc_save_all_sources', 'anc_save_all_nonce' ); ?>
-            <input type="hidden" name="action" value="anc_save_all_sources" />
 
             <table class="widefat fixed striped">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e( 'Plugin / Theme', 'admin-notice-control' ); ?></th>
+                        <th><?php esc_html_e( 'Source', 'admin-notice-control' ); ?></th>
                         <th><?php esc_html_e( 'Notices Detected', 'admin-notice-control' ); ?></th>
-                        <th><?php esc_html_e( 'Action', 'admin-notice-control' ); ?></th>
                         <th><?php esc_html_e( 'Details', 'admin-notice-control' ); ?></th>
+                        <th><?php esc_html_e( 'Action', 'admin-notice-control' ); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -59,12 +54,6 @@ defined( 'ABSPATH' ) || exit;
                 <button type="submit" class="button button-primary"><?php esc_html_e( 'Save Changes', 'admin-notice-control' ); ?></button>
             </p>
         </form>
-    <?php else : ?>
-        <p><?php esc_html_e( 'No admin notices detected.', 'admin-notice-control' ); ?></p>
-    <?php endif; ?>
-</div>
-
-        </table>
     <?php else : ?>
         <p><?php esc_html_e( 'No admin notices detected.', 'admin-notice-control' ); ?></p>
     <?php endif; ?>
