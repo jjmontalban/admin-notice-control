@@ -1,3 +1,5 @@
+// admin-notice-control.php
+
 <?php
 /**
  * Plugin Name: Admin Notice Control
@@ -14,10 +16,9 @@
 
 defined( 'ABSPATH' ) || exit;
 
-// Carga automática de clases en /admin y /core
 spl_autoload_register( function( $class ) {
     $class_file = str_replace( '\\', '/', $class ) . '.php';
-    $class_file = str_replace( '_', '', $class_file ); // Convención: AdminMenu → AdminMenu.php
+    $class_file = str_replace( '_', '', $class_file );
     $paths = [ __DIR__ . '/admin/', __DIR__ . '/core/' ];
 
     foreach ( $paths as $path ) {
@@ -29,22 +30,20 @@ spl_autoload_register( function( $class ) {
     }
 } );
 
-// Cargar traducciones
 add_action( 'plugins_loaded', function () {
     load_plugin_textdomain( 'admin-notice-control', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
-} );
 
-// Inicializar menú de ajustes
-add_action( 'plugins_loaded', function () {
     if ( is_admin() ) {
-        $menu = new AdminMenu();
-        $menu->register();
+        ( new AdminMenu() )->register();
+        ( new NoticeManager() )->disable_hidden_callbacks();
     }
 } );
 
-// Añadir enlace "Settings" en listado de plugins
-add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), function ( $links ) {
-    $settings_link = '<a href="' . esc_url( admin_url( 'options-general.php?page=admin-notice-control' ) ) . '">' . esc_html__( 'Settings', 'admin-notice-control' ) . '</a>';
-    array_unshift( $links, $settings_link );
+
+// Añadir enlace a "Ajustes" en la lista de plugins (preparado para traducción)
+function anc_plugin_settings_link($links) {
+    $settings_link = '<a href="options-general.php?page=admin-notice-control">' . esc_html__('Settings', 'admin-notice-control') . '</a>';
+    array_unshift($links, $settings_link);
     return $links;
-} );
+}
+add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'anc_plugin_settings_link');
