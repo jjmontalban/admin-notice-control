@@ -46,46 +46,57 @@ add_filter('plugin_action_links_' . plugin_basename(__FILE__), function($links) 
 add_action( 'admin_post_anc_save_all_sources', 'anc_handle_save_all_sources' );
 
 function anc_handle_save_all_sources() {
-    if ( ! current_user_can( 'manage_options' ) || ! check_admin_referer( 'anc_save_all_sources', 'anc_save_all_nonce' ) ) {
-        wp_die( esc_html__( 'Unauthorized action.', 'admin-notice-control' ) );
-    }
+	if (
+		! current_user_can( 'manage_options' ) ||
+		! check_admin_referer( 'anc_save_all_sources', 'anc_save_all_nonce' )
+	) {
+		wp_die( esc_html__( 'Unauthorized action.', 'admin-notice-control' ) );
+	}
 
-    $scanner        = new HookScanner();
-    $pluginResolver = new PluginResolver();
-    $themeResolver  = new ThemeResolver();
-    $storage        = new Storage();
-    $raw_callbacks  = $scanner->get_registered_notice_callbacks();
+	$allowed_actions = [ 'hide', 'show' ];
 
-    if ( isset( $_POST['source_settings'] ) && is_array( $_POST['source_settings'] ) ) {
-        foreach ( $_POST['source_settings'] as $source => $action ) {
-            $source = sanitize_text_field( wp_unslash( $source ) );
-            $action = sanitize_text_field( wp_unslash( $action ) );
+	$scanner        = new HookScanner();
+	$pluginResolver = new PluginResolver();
+	$themeResolver  = new ThemeResolver();
+	$storage        = new Storage();
+	$raw_callbacks  = $scanner->get_registered_notice_callbacks();
 
-            if ( $action === 'hide' ) {
-                $snapshot = [];
+	if ( isset( $_POST['source_settings'] ) && is_array( $_POST['source_settings'] ) ) {
 
-                foreach ( $raw_callbacks as $cb ) {
-                    $resolved = $pluginResolver->resolve( $cb['callback'] )
-                               ?? $themeResolver->resolve( $cb['callback'] )
-                               ?? __( 'unknown', 'admin-notice-control' );
+		foreach ( $_POST['source_settings'] as $source => $action ) {
 
-                    if ( trim( $resolved ) === trim( $source ) ) {
-                        $snapshot[] = $cb['callback'];
-                    }
-                }
+			$source = sanitize_text_field( wp_unslash( $source ) );
+			$action = sanitize_text_field( wp_unslash( $action ) );
 
-                $storage->save_callbacks_snapshot( $source, $snapshot );
-                $storage->hide( $source );
-            } elseif ( $action === 'show' ) {
-                $storage->unhide( $source );
-                delete_option( "anc_callbacks_snapshot_{$source}" );
-            }
-        }
-    }
+			if ( ! in_array( $action, $allowed_actions, true ) ) {
+				continue;
+			}
 
-    wp_safe_redirect( admin_url( 'options-general.php?page=admin-notice-control&updated=1' ) );
-    exit;
+			if ( 'hide' === $action ) {
+				$snapshot = [];
+
+				foreach ( $raw_callbacks as $cb ) {
+					$resolved = $pluginResolver->resolve( $cb['callback'] )
+						?? $themeResolver->resolve( $cb['callback'] )
+						?? __( 'unknown', 'admin-notice-control' );
+
+					if ( trim( $resolved ) === trim( $source ) ) {
+						$snapshot[] = $cb['callback'];
+					}
+				}
+
+				$storage->save_callbacks_snapshot( $source, $snapshot );
+				$storage->hide( $source );
+
+			} elseif ( 'show' === $action ) {
+				$storage->unhide( $source );
+				delete_option( "anc_callbacks_snapshot_{$source}" );
+			}
+		}
+	}
+
+	wp_safe_redirect(
+		admin_url( 'options-general.php?page=admin-notice-control&updated=1' )
+	);
+	exit;
 }
-
-
-add_action( 'admin_post_anc_toggle_notice', [ NoticesPage::class, 'handle_form' ] );

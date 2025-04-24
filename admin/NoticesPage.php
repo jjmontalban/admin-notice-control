@@ -56,14 +56,21 @@ class NoticesPage {
     }
 
     public static function handle_form() {
-        if ( ! current_user_can( 'manage_options' ) ) {
+        if (
+            ! current_user_can( 'manage_options' ) ||
+            ! check_admin_referer( 'anc_toggle_source' )
+        ) {
             wp_die( esc_html__( 'Access denied.', 'admin-notice-control' ) );
         }
-
-        check_admin_referer( 'anc_toggle_source' );
-
-        $source  = sanitize_text_field( wp_unslash( $_POST['anc_source'] ?? '' ) );
-        $action  = sanitize_text_field( wp_unslash( $_POST['anc_action'] ?? '' ) );
+    
+        $allowed_actions = [ 'hide', 'unhide' ];
+    
+        $source = sanitize_text_field( wp_unslash( $_POST['anc_source'] ?? '' ) );
+        $action = sanitize_text_field( wp_unslash( $_POST['anc_action'] ?? '' ) );
+    
+        if ( ! in_array( $action, $allowed_actions, true ) ) {
+            wp_die( esc_html__( 'Invalid action.', 'admin-notice-control' ) );
+        }
 
         $scanner        = new HookScanner();
         $pluginResolver = new PluginResolver();
