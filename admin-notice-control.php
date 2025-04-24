@@ -47,3 +47,30 @@ function anc_plugin_settings_link($links) {
     return $links;
 }
 add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'anc_plugin_settings_link');
+
+
+add_action( 'admin_post_anc_save_all_sources', 'anc_handle_save_all_sources' );
+
+function anc_handle_save_all_sources() {
+    if ( ! current_user_can( 'manage_options' ) || ! check_admin_referer( 'anc_save_all_sources', 'anc_save_all_nonce' ) ) {
+        wp_die( esc_html__( 'Unauthorized action.', 'admin-notice-control' ) );
+    }
+
+    $storage = new Storage();
+
+    if ( isset( $_POST['source_settings'] ) && is_array( $_POST['source_settings'] ) ) {
+        foreach ( $_POST['source_settings'] as $source => $action ) {
+            $source = sanitize_text_field( wp_unslash( $source ) );
+            $action = sanitize_text_field( wp_unslash( $action ) );
+
+            if ( $action === 'hide' ) {
+                $storage->hide( $source );
+            } elseif ( $action === 'show' ) {
+                $storage->unhide( $source );
+            }
+        }
+    }
+
+    wp_safe_redirect( admin_url( 'options-general.php?page=admin-notice-control&updated=1' ) );
+    exit;
+}
