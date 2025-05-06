@@ -6,8 +6,8 @@
 
     <?php if ( ! empty( $sources ) ) : ?>
         <form method="post" action="<?php echo esc_url( admin_url('admin-post.php') ); ?>">
-            <input type="hidden" name="action" value="anc_save_all_sources">
-            <?php wp_nonce_field( 'anc_save_all_sources', 'anc_save_all_nonce' ); ?>
+            <input type="hidden" name="action" value="adminnc_save_all_sources">
+            <?php wp_nonce_field( 'adminnc_save_all_sources', 'adminnc_save_all_nonce' ); ?>
 
             <table class="widefat fixed striped">
                 <thead>

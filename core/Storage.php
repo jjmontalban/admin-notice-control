@@ -4,7 +4,7 @@ defined( 'ABSPATH' ) || exit;
 
 class Storage {
 
-    private string $option_name = 'anc_hidden_sources';
+    private string $option_name = 'adminnc_hidden_sources';
 
     /**
      * Devuelve todos los orígenes ocultos (plugins/temas)
@@ -54,7 +54,7 @@ class Storage {
      * Guarda los callbacks activos al momento de ocultar
      */
     public function save_callbacks_snapshot( string $source, array $callbacks ): void {
-        update_option( "anc_callbacks_snapshot_{$source}", $callbacks );
+        update_option( "adminnc_callbacks_snapshot_{$source}", $callbacks );
     }
     
 
@@ -62,7 +62,7 @@ class Storage {
      * Devuelve el snapshot de callbacks desactivados para un origen
      */
     public function get_callbacks_snapshot( string $source ): array {
-        return get_option( "anc_callbacks_snapshot_{$source}", [] );
+        return get_option( "adminnc_callbacks_snapshot_{$source}", [] );
     }
 
 }

@@ -14,9 +14,9 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'ANC_PLUGIN_FILE', __FILE__ );
-define( 'ANC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( 'ANC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'ADMINNC_PLUGIN_FILE', __FILE__ );
+define( 'ADMINNC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'ADMINNC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 spl_autoload_register( function( $class ) {
     $class_file = str_replace( '\\', '/', $class ) . '.php';
@@ -46,12 +46,12 @@ add_filter('plugin_action_links_' . plugin_basename(__FILE__), function($links) 
     return $links;
 });
 
-add_action( 'admin_post_anc_save_all_sources', 'anc_handle_save_all_sources' );
+add_action( 'admin_post_adminnc_save_all_sources', 'adminnc_handle_save_all_sources' );
 
-function anc_handle_save_all_sources() {
+function adminnc_handle_save_all_sources() {
 	if (
 		! current_user_can( 'manage_options' ) ||
-		! check_admin_referer( 'anc_save_all_sources', 'anc_save_all_nonce' )
+		! check_admin_referer( 'adminnc_save_all_sources', 'adminnc_save_all_nonce' )
 	) {
 		wp_die( esc_html__( 'Unauthorized action.', 'admin-notice-control' ) );
 	}
@@ -93,7 +93,7 @@ function anc_handle_save_all_sources() {
 
 			} elseif ( 'show' === $action ) {
 				$storage->unhide( $source );
-				delete_option( "anc_callbacks_snapshot_{$source}" );
+				delete_option( "adminnc_callbacks_snapshot_{$source}" );
 			}
 		}
 	}

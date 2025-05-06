@@ -25,7 +25,7 @@ Tired of a cluttered WordPress dashboard full of nags and promo banners?
 * Detects callbacks attached to `admin_notices` and `all_admin_notices`.
 * Groups notices by **source** (`plugin: my-plugin`, `theme: my-theme`).
 * One-page UI under **Settings → Admin Notice Control**.
-* Stores user choices in a single option (`anc_hidden_sources`).
+* Stores user choices in a single option (`adminnc_hidden_sources`).
 * Cleans up after itself on uninstall.
 
 == Screenshots ==

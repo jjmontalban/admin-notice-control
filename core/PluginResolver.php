@@ -30,7 +30,7 @@ class PluginResolver {
             
             // Normaliza las rutas para compatibilidad en Windows
             $file_normalized = wp_normalize_path( $file );
-            $plugin_dir_normalized = wp_normalize_path( dirname( ANC_PLUGIN_FILE ) );
+            $plugin_dir_normalized = wp_normalize_path( dirname( ADMINNC_PLUGIN_FILE ) );
             
             if ( strpos( $file_normalized, $plugin_dir_normalized ) !== 0 ) {
                 return null;

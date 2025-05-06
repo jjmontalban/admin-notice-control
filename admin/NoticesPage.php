@@ -58,15 +58,15 @@ class NoticesPage {
     public static function handle_form() {
         if (
             ! current_user_can( 'manage_options' ) ||
-            ! check_admin_referer( 'anc_toggle_source' )
+            ! check_admin_referer( 'adminnc_toggle_source' )
         ) {
             wp_die( esc_html__( 'Access denied.', 'admin-notice-control' ) );
         }
     
         $allowed_actions = [ 'hide', 'unhide' ];
     
-        $source = sanitize_text_field( wp_unslash( $_POST['anc_source'] ?? '' ) );
-        $action = sanitize_text_field( wp_unslash( $_POST['anc_action'] ?? '' ) );
+        $source = sanitize_text_field( wp_unslash( $_POST['adminnc_source'] ?? '' ) );
+        $action = sanitize_text_field( wp_unslash( $_POST['adminnc_action'] ?? '' ) );
     
         if ( ! in_array( $action, $allowed_actions, true ) ) {
             wp_die( esc_html__( 'Invalid action.', 'admin-notice-control' ) );
@@ -96,7 +96,7 @@ class NoticesPage {
             $storage->hide( $source );
         } elseif ( $action === 'unhide' ) {
             $storage->unhide( $source );
-            delete_option( "anc_callbacks_snapshot_{$source}" );
+            delete_option( "adminnc_callbacks_snapshot_{$source}" );
         }
 
         wp_safe_redirect( admin_url( 'options-general.php?page=admin-notice-control' ) );
