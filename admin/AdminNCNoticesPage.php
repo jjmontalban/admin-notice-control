@@ -52,7 +52,7 @@ class AdminNCNoticesPage {
 
         $sources = array_values( $groups );
 
-        include plugin_dir_path( __FILE__ ) . '../templates/settings-page.php';
+        include ADMINNC_PLUGIN_DIR . 'templates/settings-page.php';
     }
 
     public static function handle_form() {
@@ -65,8 +65,11 @@ class AdminNCNoticesPage {
     
         $allowed_actions = [ 'hide', 'unhide' ];
     
-        $source = sanitize_text_field( wp_unslash( $_POST['adminnc_source'] ?? '' ) );
-        $action = sanitize_text_field( wp_unslash( $_POST['adminnc_action'] ?? '' ) );
+        /* ── Sanitización masiva de todo el array $_POST ─────────── */
+        $post = map_deep( wp_unslash( $_POST ), 'sanitize_text_field' );
+    
+        $source = $post['adminnc_source'] ?? '';
+        $action = $post['adminnc_action'] ?? '';
     
         if ( ! in_array( $action, $allowed_actions, true ) ) {
             wp_die( esc_html__( 'Invalid action.', 'admin-notice-control' ) );
