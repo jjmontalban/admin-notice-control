@@ -14,6 +14,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
+define( 'ANC_PLUGIN_FILE', __FILE__ );
+define( 'ANC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'ANC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+
 spl_autoload_register( function( $class ) {
     $class_file = str_replace( '\\', '/', $class ) . '.php';
     $class_file = str_replace( '_', '', $class_file );
