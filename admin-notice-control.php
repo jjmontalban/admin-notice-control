@@ -66,11 +66,9 @@ function adminnc_handle_save_all_sources() {
 
 	if ( isset( $_POST['source_settings'] ) && is_array( $_POST['source_settings'] ) ) {
 
-		foreach ( $_POST['source_settings'] as $source => $action ) {
-
-			$source = sanitize_text_field( wp_unslash( $source ) );
-			$action = sanitize_text_field( wp_unslash( $action ) );
-
+		$sanitized_settings = map_deep( wp_unslash( $_POST['source_settings'] ), 'sanitize_text_field' );
+	
+		foreach ( $sanitized_settings as $source => $action ) {
 			if ( ! in_array( $action, $allowed_actions, true ) ) {
 				continue;
 			}
