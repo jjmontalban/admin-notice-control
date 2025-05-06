@@ -33,7 +33,6 @@ spl_autoload_register( function( $class ) {
 } );
 
 add_action( 'plugins_loaded', function () {
-    load_plugin_textdomain( 'admin-notice-control', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 
     if ( is_admin() ) {
         ( new AdminMenu() )->register();
