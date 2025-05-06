@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-class PluginResolver {
+class AdminNCPluginResolver {
 
     /**
      * Determina si un callback proviene de un plugin y devuelve su slug

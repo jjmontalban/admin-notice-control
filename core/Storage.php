@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-class Storage {
+class AdminNCStorage {
 
     private string $option_name = 'adminnc_hidden_sources';
 

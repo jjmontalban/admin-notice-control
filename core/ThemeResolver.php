@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-class ThemeResolver {
+class AdminNCThemeResolver {
 
     /**
      * Determina si un callback proviene del tema activo (padre o hijo)

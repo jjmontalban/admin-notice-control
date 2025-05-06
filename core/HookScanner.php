@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-class HookScanner {
+class AdminNCHookScanner {
 
     /**
      * Devuelve una lista de callbacks registrados en hooks de avisos

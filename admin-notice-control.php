@@ -35,8 +35,8 @@ spl_autoload_register( function( $class ) {
 add_action( 'plugins_loaded', function () {
 
     if ( is_admin() ) {
-        ( new AdminMenu() )->register();
-        ( new NoticeManager() )->disable_hidden_callbacks();
+        ( new AdminNCAdminMenu() )->register();
+        ( new AdminNCNoticeManager() )->disable_hidden_callbacks();
     }
 });
 
@@ -58,10 +58,10 @@ function adminnc_handle_save_all_sources() {
 
 	$allowed_actions = [ 'hide', 'show' ];
 
-	$scanner        = new HookScanner();
-	$pluginResolver = new PluginResolver();
-	$themeResolver  = new ThemeResolver();
-	$storage        = new Storage();
+	$scanner        = new AdminNCHookScanner();
+	$pluginResolver = new AdminNCPluginResolver();
+	$themeResolver  = new AdminNCThemeResolver();
+	$storage        = new AdminNCStorage();
 	$raw_callbacks  = $scanner->get_registered_notice_callbacks();
 
 	if ( isset( $_POST['source_settings'] ) && is_array( $_POST['source_settings'] ) ) {

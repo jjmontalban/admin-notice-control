@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-class NoticeManager {
+class AdminNCNoticeManager {
 
     /**
      * Desactiva los avisos de los orígenes (plugins/temas) ocultos
@@ -11,11 +11,11 @@ class NoticeManager {
         global $wp_filter;
 
         $hooks = [ 'admin_notices', 'all_admin_notices' ];
-        $storage = new Storage();
+        $storage = new AdminNCStorage();
         $hidden_sources = $storage->get_all();
 
-        $pluginResolver = new PluginResolver();
-        $themeResolver  = new ThemeResolver();
+        $pluginResolver = new AdminNCPluginResolver();
+        $themeResolver  = new AdminNCThemeResolver();
 
         foreach ( $hooks as $hook ) {
             if ( ! isset( $wp_filter[ $hook ] ) || ! is_a( $wp_filter[ $hook ], 'WP_Hook' ) ) {

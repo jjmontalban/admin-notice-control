@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-class AdminMenu {
+class AdminNCAdminMenu {
 
     /**
      * Registra la página de ajustes en el menú del admin
@@ -20,7 +20,7 @@ class AdminMenu {
             __( 'Admin Notice Control', 'admin-notice-control' ),
             'manage_options',
             'admin-notice-control',
-            [ NoticesPage::class, 'render' ]
+            [ AdminNCNoticesPage::class, 'render' ]
         );
     }
 }

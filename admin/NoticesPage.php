@@ -2,17 +2,17 @@
 
 defined( 'ABSPATH' ) || exit;
 
-class NoticesPage {
+class AdminNCNoticesPage {
 
     public static function render() {
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_die( esc_html__( 'Access denied.', 'admin-notice-control' ) );
         }
 
-        $scanner        = new HookScanner();
-        $pluginResolver = new PluginResolver();
-        $themeResolver  = new ThemeResolver();
-        $storage        = new Storage();
+        $scanner        = new AdminNCHookScanner();
+        $pluginResolver = new AdminNCPluginResolver();
+        $themeResolver  = new AdminNCThemeResolver();
+        $storage        = new AdminNCStorage();
         $raw_callbacks = $scanner->get_registered_notice_callbacks();
         $groups = [];
         $storage_hidden = $storage->get_all();
@@ -72,10 +72,10 @@ class NoticesPage {
             wp_die( esc_html__( 'Invalid action.', 'admin-notice-control' ) );
         }
 
-        $scanner        = new HookScanner();
-        $pluginResolver = new PluginResolver();
-        $themeResolver  = new ThemeResolver();
-        $storage        = new Storage();
+        $scanner        = new AdminNCHookScanner();
+        $pluginResolver = new AdminNCPluginResolver();
+        $themeResolver  = new AdminNCThemeResolver();
+        $storage        = new AdminNCStorage();
 
         $raw_callbacks = $scanner->get_registered_notice_callbacks();
 
